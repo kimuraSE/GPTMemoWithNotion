@@ -9,8 +9,14 @@ import (
 
 func main(){
 	chatgptRepository := repository.NewChatGPTRepository()
+	notionRepository := repository.NewNotionRepository()
+
 	chatgptUsercase := usecase.NewChatGPTUsecase(chatgptRepository)
+	notionUsecase := usecase.NewNotionUsecase(notionRepository)
+
 	chatGPTController := controller.NewChatGPTController(chatgptUsercase)
-	e := router.NewRouter(chatGPTController)
+	notionController := controller.NewNotionController(notionUsecase)
+
+	e := router.NewRouter(chatGPTController, notionController)
 	e.Logger.Fatal(e.Start(":8080"))
 }
