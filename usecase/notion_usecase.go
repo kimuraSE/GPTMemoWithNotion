@@ -6,7 +6,7 @@ import (
 )
 
 type INotionUsecase interface {
-	CreatePage(notion model.NotionRequest) (model.NotionResponse, error)
+	CreatePage(notion model.NotionRequest) error
 }
 
 type notionUsecase struct {
@@ -17,16 +17,13 @@ func NewNotionUsecase(nr repository.INotionRepository) INotionUsecase {
 	return &notionUsecase{nr}
 }
 
-func (nu *notionUsecase) CreatePage(notion model.NotionRequest) (model.NotionResponse, error) {
+func (nu *notionUsecase) CreatePage(notion model.NotionRequest) error{
 	
 	err := nu.nr.CreatePage(notion)
 	if err != nil {
-		return model.NotionResponse{},err
+		return err
 	}
-
-	notionRes := model.NotionResponse{
-		Title : notion.Title,
-	}
-	return notionRes,nil
+	
+	return nil
 
 }

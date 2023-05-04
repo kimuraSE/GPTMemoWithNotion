@@ -6,6 +6,4 @@ type NotionRequest struct {
 	Content string `json:"content"`
 }
 
-type NotionResponse struct {
-	Title string `json:"title"`
-}
+
