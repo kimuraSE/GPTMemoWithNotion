@@ -6,8 +6,9 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func NewRouter(cc controller.IChatGPTController) *echo.Echo {
+func NewRouter(cc controller.IChatGPTController , nc controller.INotionController) *echo.Echo {
 	e := echo.New()
 	e.POST("/chatgpt", cc.GetAnswer)
+	e.POST("/notion", nc.CreatePage)
 	return e
 }
