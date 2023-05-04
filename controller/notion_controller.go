@@ -26,10 +26,10 @@ func (nc *notionController) CreatePage(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 
-	notionRes,err := nc.nu.CreatePage(notion)
+	err := nc.nu.CreatePage(notion)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 
-	return c.JSON(http.StatusOK, notionRes)
+	return c.JSON(http.StatusOK, nil)
 }
