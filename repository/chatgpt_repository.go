@@ -3,7 +3,9 @@ package repository
 import (
 	"GPTMemoWithNotion/Backend/model"
 	"context"
+	"fmt"
 	"os"
+
 	"github.com/joho/godotenv"
 	openai "github.com/sashabaranov/go-openai"
 )
@@ -35,7 +37,18 @@ func (cr *chatGPTRepository) GetAnswer(chatgpt model.ChatGPTRequest) (string, er
 			Messages: []openai.ChatCompletionMessage{
 				{
 					Role:    openai.ChatMessageRoleUser,
-					Content: chatgpt.Question,
+					Content: fmt.Sprintf(`
+					"%s"について小学生でもわかるように以下の出力形式に合わせて教えてください
+					出力形式:
+					・結論
+					-<テキスト>
+					・なぜ
+					-<テキスト>
+					・例
+					-<例え話>
+					・まとめ
+					-<テキスト>
+					`, chatgpt.Question),
 				},
 			},
 		},
