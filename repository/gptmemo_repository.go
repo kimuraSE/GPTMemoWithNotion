@@ -1,34 +1,61 @@
 package repository
 
 import (
-	"GPTMemoWithNotion/Backend/model"
+	"Backend/model"
+	"context"
 	"fmt"
 	"net/http"
 	"os"
 	"strings"
 
 	"github.com/joho/godotenv"
+	openai "github.com/sashabaranov/go-openai"
 )
 
-type INotionRepository interface {
-	CreatePage(notion model.NotionRequest) error
+type IGPTMemoRepository interface {
+	CreateNotionPage(gptnotion model.GPTMemoRequest) error
 }
 
-type notionRepository struct {
+type gptMemoRepository struct {
 }
 
-func NewNotionRepository() INotionRepository {
-	return &notionRepository{}
+func NewGPTMemoRepository() IGPTMemoRepository {
+	return &gptMemoRepository{}
 }
 
-func (nr *notionRepository) CreatePage(notion model.NotionRequest) error {
+func (gr *gptMemoRepository) CreateNotionPage(gptnotion model.GPTMemoRequest) error {
 	
 	err := godotenv.Load()
 	if err != nil {
 		return err
 	}
+
+	openaiapikey := os.Getenv("OPENAI_API_KEY")
 	notionPageId := os.Getenv("NOTION_PAGE_ID")
 	notionApiKey := os.Getenv("NOTION_API_KEY")
+
+	client := openai.NewClient(openaiapikey)
+	resp, err := client.CreateChatCompletion(
+		context.Background(),
+		openai.ChatCompletionRequest{
+			Model: openai.GPT3Dot5Turbo,
+			Messages: []openai.ChatCompletionMessage{
+				{
+					Role:    openai.ChatMessageRoleUser,
+					Content: fmt.Sprintf(`
+					"%s"について結論→なぜ→例→まとめの順に1文でマークアップを用いらずに教えてください
+					`, gptnotion.Question),
+				},
+			},
+		},
+	)
+
+	if err != nil {
+		return err
+	}
+
+	answer:=resp.Choices[0].Message.Content
+
 
 	body := strings.NewReader(fmt.Sprintf(`
 	{
@@ -78,7 +105,7 @@ func (nr *notionRepository) CreatePage(notion model.NotionRequest) error {
 		]
 	  }
 
-	`,notionPageId,notion.Title,notion.Headline,notion.Content))
+	`,notionPageId,gptnotion.Title,gptnotion.Headline,answer))
 
 	req, err := http.NewRequest("POST", "https://api.notion.com/v1/pages", body)
 	if err != nil {
@@ -95,7 +122,5 @@ func (nr *notionRepository) CreatePage(notion model.NotionRequest) error {
 	}
 	defer res.Body.Close()
 	
-
 	return nil
-	
 }

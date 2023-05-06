@@ -1,27 +1,26 @@
 package controller
 
 import (
-	"GPTMemoWithNotion/Backend/model"
-	"GPTMemoWithNotion/Backend/usecase"
+	"Backend/model"
+	"Backend/usecase"
 	"net/http"
-
 	"github.com/labstack/echo/v4"
 )
 
-type IGPTNotionController interface {
+type IGPTMemoController interface {
 	CreateNotionPage(c echo.Context) error
 }
 
 type gptNotionController struct {
-	gu usecase.IGPTNotionUsecase
+	gu usecase.IGPTMemoUsecase
 }
 
-func NewGPTNotionController(gu usecase.IGPTNotionUsecase) IGPTNotionController {
+func NewGPTMemoController(gu usecase.IGPTMemoUsecase) IGPTMemoController {
 	return &gptNotionController{gu}
 }
 
 func (gc *gptNotionController) CreateNotionPage(c echo.Context) error {
-	gptnotion := model.GPTNotionRequest{}
+	gptnotion := model.GPTMemoRequest{}
 	if err:= c.Bind(&gptnotion); err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}

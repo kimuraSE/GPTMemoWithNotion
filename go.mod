@@ -1,4 +1,4 @@
-module GPTMemoWithNotion/Backend
+module Backend
 
 go 1.20
 

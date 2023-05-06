@@ -1,23 +1,23 @@
 package usecase
 
 import (
-	"GPTMemoWithNotion/Backend/model"
-	"GPTMemoWithNotion/Backend/repository"
+	"Backend/model"
+	"Backend/repository"
 )
 
-type IGPTNotionUsecase interface {
-	CreateNotionPage(gptnotion model.GPTNotionRequest) error
+type IGPTMemoUsecase interface {
+	CreateNotionPage(gptnotion model.GPTMemoRequest) error
 }
 
-type gptNotionUsecase struct {
-	gr repository.IGPTNotionRepository
+type gptMemoUsecase struct {
+	gr repository.IGPTMemoRepository
 }
 
-func NewGPTNotionUsecase(gr repository.IGPTNotionRepository) IGPTNotionUsecase {
-	return &gptNotionUsecase{gr}
+func NewGPTMemoUsecase(gr repository.IGPTMemoRepository) IGPTMemoUsecase {
+	return &gptMemoUsecase{gr}
 }
 
-func (gu *gptNotionUsecase) CreateNotionPage(gptnotion model.GPTNotionRequest) error {
+func (gu *gptMemoUsecase) CreateNotionPage(gptnotion model.GPTMemoRequest) error {
 	
 	err := gu.gr.CreateNotionPage(gptnotion)
 	if err != nil {

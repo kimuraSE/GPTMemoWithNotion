@@ -1,24 +1,18 @@
 package main
 
 import (
-	"GPTMemoWithNotion/Backend/controller"
-	"GPTMemoWithNotion/Backend/repository"
-	"GPTMemoWithNotion/Backend/router"
-	"GPTMemoWithNotion/Backend/usecase"
+	"Backend/controller"
+	"Backend/repository"
+	"Backend/router"
+	"Backend/usecase"
 )
 
 func main(){
-	chatgptRepository := repository.NewChatGPTRepository()
-	notionRepository := repository.NewNotionRepository()
-	gptNotionRepository := repository.NewGPTNotionRepository()
-	chatgptUsercase := usecase.NewChatGPTUsecase(chatgptRepository)
-	notionUsecase := usecase.NewNotionUsecase(notionRepository)
-	gptNotionUsecase := usecase.NewGPTNotionUsecase(gptNotionRepository)
+	
+	gptMemoRepository := repository.NewGPTMemoRepository()
+	gptMemoUsecase := usecase.NewGPTMemoUsecase(gptMemoRepository)
+	gptMemoController := controller.NewGPTMemoController(gptMemoUsecase)
 
-	chatGPTController := controller.NewChatGPTController(chatgptUsercase)
-	notionController := controller.NewNotionController(notionUsecase)
-	gptNotionController := controller.NewGPTNotionController(gptNotionUsecase)
-
-	e := router.NewRouter(chatGPTController, notionController, gptNotionController)
+	e := router.NewRouter(gptMemoController)
 	e.Logger.Fatal(e.Start(":8080"))
 }
